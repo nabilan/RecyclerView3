@@ -26,6 +26,7 @@ import id.sch.smktelkom_mlg.learn.recyclerview3.model.Hotel;
 
 public class MainActivity extends AppCompatActivity implements HotelAdapter.IHotelAdapter {
     public static final String HOTEL = "hotel";
+    public static final int REQUEST_CODE_ADD = 88;
     ArrayList<Hotel> mList = new ArrayList<>();
     HotelAdapter mAdapter;
 
@@ -40,9 +41,8 @@ public class MainActivity extends AppCompatActivity implements HotelAdapter.IHot
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
+                goAdd();
+                 }
         });
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -51,6 +51,10 @@ public class MainActivity extends AppCompatActivity implements HotelAdapter.IHot
         recyclerView.setAdapter(mAdapter);
 
         fillData();
+    }
+
+    private void goAdd() {
+        startActivityForResult(new Intent(this, InputActivity.class),  REQUEST_CODE_ADD);
     }
 
     private void fillData() {
@@ -105,5 +109,16 @@ public class MainActivity extends AppCompatActivity implements HotelAdapter.IHot
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE_ADD && resultCode == RESULT_OK)
+        {
+            Hotel hotel = (Hotel) data.getSerializableExtra(HOTEL);
+            mList.add(hotel);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 }
